@@ -12,7 +12,7 @@ description: >
 
 Use this for any live sports betting analysis that may involve Polymarket odds, whale flow, or trading.
 
-Hard rule: analysis and execution are separate. Never place, cancel, or modify an order until the user explicitly confirms the exact order.
+Hard rule: analysis and execution are separate. Never place, cancel, or modify an order until the user explicitly confirms the exact order, except for a live-betting pre-authorization that clearly defines the limits below.
 
 ## Step 1: Detect Runtime
 
@@ -111,7 +111,7 @@ If no edge is clear, recommend no bet.
 
 ## Step 5: Confirmation Gate
 
-Before execution, show an order ticket and wait.
+Before execution, show an order ticket and wait, unless an active live pre-authorization covers the order.
 
 Required ticket:
 
@@ -140,6 +140,43 @@ Confirmation expires if price moves above the ticket price, line/market changes,
 
 If the user changes price, size, market, or asks a new question, return to recommendation or confirmation. Do not treat a general "帮我下单" as confirmation.
 
+### Live Pre-Authorization
+
+For live betting only, the user may pre-authorize fast execution before or during a match. This replaces repeated per-order confirmation only inside strict limits.
+
+Required pre-authorization ticket:
+
+```text
+滚球预授权：
+比赛：
+允许市场：
+单注上限：
+本场新增总上限：
+价格上限/下限：
+有效期：
+触发条件：
+禁止事项：
+
+回复“确认滚球预授权”后，在这些边界内我可以直接下单；超出边界必须重新确认。
+```
+
+Allowed only when all are true:
+- The user explicitly replies "确认滚球预授权" or equivalent wording for that exact ticket.
+- The match, market family, side, stake cap, total exposure cap, price limit, and expiry are all specified.
+- The order is a limit order within the pre-authorized price and stake.
+- Live score/time and best bid/ask are refreshed immediately before execution.
+- A dry run succeeds.
+
+Pre-authorization expires immediately if:
+- A goal, red card, penalty, halftime/fulltime, extra time, shootout, or market suspension occurs.
+- The market line changes, e.g. O/U 2.5 to O/U 3.5.
+- Price moves outside the approved limit.
+- The single-order or total match exposure cap would be exceeded.
+- The user asks for new analysis, changes strategy, or says stop/cancel.
+- The stated time window expires.
+
+Never use pre-authorization for futures, outright markets, deposits/withdrawals, wallet changes, or any trade outside the named match.
+
 ## Step 6: Execute Safely
 
 Before real execution:
@@ -156,6 +193,7 @@ Never:
 - Increase stake because balance is available without confirmation.
 - Chase a moved price unless the ticket allowed that max price.
 - Auto-follow whales without a separate explicit confirmation.
+- Treat "以后不用确认" as unlimited trading permission; require a bounded live pre-authorization ticket.
 
 ## Step 7: Respond
 
