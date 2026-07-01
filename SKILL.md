@@ -49,7 +49,9 @@ For each match, gather in this order:
 For Polymarket soccer, check both the main event and `-more-markets` event; totals, spreads, BTTS, team totals, extra time, and penalties may live under `more-markets`.
 
 When live:
-- Refresh score/time before recommending, before showing a ticket, and again immediately before execution.
+- Use the main Gamma event's `score`, `live`, `period`, `elapsed`, and `ended` fields as the primary match-state source.
+- Do not use `-more-markets` as the score/time source; it can lag the main event. Use it for extra markets and token IDs only.
+- Refresh main-event score/time before recommending, before showing a ticket, and again immediately before execution.
 - Treat a goal, red card, halftime/fulltime, major injury, or large price gap as a new market state.
 - Do not use stale pre-match odds language once the match has started.
 
