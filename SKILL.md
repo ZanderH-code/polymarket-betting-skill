@@ -37,9 +37,9 @@ Decision tree:
 
 For each match, gather in this order:
 
-1. Match state: kickoff time, score/time if live, knockout/group motivation.
-2. Team news: confirmed lineups first; otherwise injuries, rotation, suspensions, motivation, weather/venue.
-3. Polymarket board: main event plus `-more-markets`.
+1. Polymarket event page/API: match state, kickoff time, score/time if live, and market board.
+2. Polymarket board: main event plus `-more-markets`.
+3. Team news: use Polymarket if it exposes structured lineups; otherwise use Guardian/FOX/ESPN/Sofascore for confirmed lineups, injuries, rotation, suspensions, motivation, weather/venue.
 4. CLOB best bid/ask for shortlisted markets.
 5. User exposure from account/open orders when trading.
 
