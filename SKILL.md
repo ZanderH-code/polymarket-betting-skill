@@ -27,23 +27,31 @@ Check what is available before acting:
 ```
 
 Decision tree:
-1. If live data is available -> fetch current odds, news, lineups, and CLOB books.
-2. If `polymarket-whales.mjs` exists -> run whale scan for any serious pre-trade read.
-3. If local agent is available -> account checks and dry runs are allowed.
-4. If local agent is missing -> still analyze; give setup/restart steps before any trade.
-5. If data is stale or incomplete -> say so and do not execute.
+1. Use Polymarket official APIs first: Gamma for events/markets, CLOB for live prices/books, Data API for trades/holders/positions, Sports WebSocket or sports result payloads for live score/time when available.
+2. If live data is available -> fetch current odds, match state, news, lineups, and CLOB books.
+3. If `polymarket-whales.mjs` exists -> run whale scan for any serious pre-trade read.
+4. If local agent is available -> account checks and dry runs are allowed.
+5. If local agent is missing -> still analyze; give setup/restart steps before any trade.
+6. If data is stale or incomplete -> say so and do not execute.
 
 ## Step 2: Read The Board
 
 For each match, gather in this order:
 
-1. Polymarket event page/API: match state, kickoff time, score/time if live, and market board.
-2. Polymarket board: main event plus `-more-markets`.
-3. Team news: use Polymarket if it exposes structured lineups; otherwise use Guardian/FOX/ESPN/Sofascore for confirmed lineups, injuries, rotation, suspensions, motivation, weather/venue.
-4. CLOB best bid/ask for shortlisted markets.
-5. User exposure from account/open orders when trading.
+1. Gamma event/API: slug, kickoff, active/closed status, related markets, token IDs, outcomes, and `-more-markets`.
+2. CLOB: best bid/ask, midpoint, spread, and order book depth for shortlisted tokens.
+3. Sports result feed: live/ended flag, score, period, elapsed time, and last update if the match is live.
+4. Data API: recent trades, holders, open interest, and user positions when needed.
+5. Team news: use Polymarket if it exposes structured lineups; otherwise use Guardian/FOX/ESPN/Sofascore for confirmed lineups, injuries, rotation, suspensions, motivation, weather/venue.
+6. External match stats: use FOX/Sofascore/ESPN for shots, xG, possession, cards, subs, and pressure. Do not imply Polymarket provides these unless verified.
+7. User exposure from account/open orders when trading.
 
 For Polymarket soccer, check both the main event and `-more-markets` event; totals, spreads, BTTS, team totals, extra time, and penalties may live under `more-markets`.
+
+When live:
+- Refresh score/time before recommending, before showing a ticket, and again immediately before execution.
+- Treat a goal, red card, halftime/fulltime, major injury, or large price gap as a new market state.
+- Do not use stale pre-match odds language once the match has started.
 
 ## Step 3: Run Whale Flow
 
@@ -54,6 +62,7 @@ node scripts/polymarket-whales.mjs --slug=EVENT_SLUG --minutes=60 --min=10000
 ```
 
 Use `--minutes=30` when kickoff is close or live. Use `--min=5000` for thin markets; keep `--min=10000` for liquid World Cup markets.
+If updating the script, prefer Data API server-side filters such as cash amount filters instead of downloading everything and filtering locally.
 
 Read whale flow as signal, not truth:
 
@@ -89,11 +98,12 @@ Recommendation must include:
 1. Pick and market name.
 2. Current price and decimal odds.
 3. Stake in dollars and units.
-4. Existing related exposure.
-5. Whale flow summary: supports / conflicts / neutral.
-6. Why this is better than the closest alternatives.
-7. What score/game script wins and loses.
-8. Confidence: lean / playable / strong; avoid "lock" language.
+4. Freshness: source and timestamp/elapsed match state.
+5. Existing related exposure.
+6. Whale flow summary: supports / conflicts / neutral.
+7. Why this is better than the closest alternatives.
+8. What score/game script wins and loses.
+9. Confidence: lean / playable / strong; avoid "lock" language.
 
 If no edge is clear, recommend no bet.
 
@@ -134,7 +144,7 @@ Before real execution:
 
 1. Run a dry run with the same token, price, size, and max cost.
 2. If dry run fails, stop and report the error.
-3. Re-check best ask/bid if the market is live or close to kickoff.
+3. Re-check live score/time and best ask/bid if the market is live or close to kickoff.
 4. If dry run passes and confirmation is still current, execute once.
 5. Query account/trades afterward.
 
