@@ -1,0 +1,7 @@
+.env
+.env.*
+*.key
+*.pem
+wallet*.json
+*.enc.json
+node_modules/

@@ -1,0 +1,9 @@
+{
+  "name": "polymarket-betting-skill",
+  "version": "0.1.0",
+  "type": "module",
+  "private": false,
+  "scripts": {
+    "whales": "node scripts/polymarket-whales.mjs"
+  }
+}
