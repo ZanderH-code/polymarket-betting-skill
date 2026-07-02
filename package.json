@@ -4,6 +4,7 @@
   "type": "module",
   "private": false,
   "scripts": {
+    "board": "node scripts/polymarket-board.mjs",
     "whales": "node scripts/polymarket-whales.mjs"
   }
 }

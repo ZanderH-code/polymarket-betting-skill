@@ -20,14 +20,16 @@ Check what is available before acting:
 
 ```bash
 !`pwd; test -f package.json && echo PROJECT_OK || echo PROJECT_MISSING`
+!`test -f scripts/polymarket-board.mjs && echo BOARD_OK || echo BOARD_MISSING`
 !`test -f scripts/polymarket-whales.mjs && echo WHALES_OK || echo WHALES_MISSING`
 !`test -f "$HOME/.polymarket-codex/agent.token" && echo AGENT_TOKEN_FILE_OK || echo AGENT_TOKEN_FILE_MISSING`
 !`curl -sf https://clob.polymarket.com/health >/dev/null && echo CLOB_OK || echo CLOB_UNREACHABLE`
 !`curl -sf https://data-api.polymarket.com/trades?limit=1 >/dev/null && echo DATA_API_OK || echo DATA_API_UNREACHABLE`
+!`curl -sf https://combos-rfq-api.polymarket.com/v1/rfq/combo-markets?limit=1 >/dev/null && echo COMBOS_OK || echo COMBOS_UNREACHABLE`
 ```
 
 Decision tree:
-1. Use Polymarket official APIs first: Gamma for events/markets, CLOB for live prices/books, Data API for trades/holders/positions, Sports WebSocket or sports result payloads for live score/time when available.
+1. Use Polymarket official APIs first: Gamma for events/markets and sports market types, CLOB for live prices/books, Combos RFQ for combo-eligible markets, Data API for trades/holders/positions, Sports WebSocket or sports result payloads for live score/time when available.
 2. If live data is available -> fetch current odds, match state, news, lineups, and CLOB books.
 3. If `polymarket-whales.mjs` exists -> run whale scan for any serious pre-trade read.
 4. If local agent is available -> account checks and dry runs are allowed.
@@ -39,14 +41,24 @@ Decision tree:
 For each match, gather in this order:
 
 1. Gamma event/API: slug, kickoff, active/closed status, related markets, token IDs, outcomes, and `-more-markets`.
-2. CLOB: best bid/ask, midpoint, spread, and order book depth for shortlisted tokens.
-3. Sports result feed: live/ended flag, score, period, elapsed time, and last update if the match is live.
-4. Data API: recent trades, holders, open interest, and user positions when needed.
-5. Team news: use Polymarket if it exposes structured lineups; otherwise use Guardian/FOX/ESPN/Sofascore for confirmed lineups, injuries, rotation, suspensions, motivation, weather/venue.
-6. External match stats: use FOX/Sofascore/ESPN for shots, xG, possession, cards, subs, and pressure. Do not imply Polymarket provides these unless verified.
-7. User exposure from account/open orders when trading.
+2. Gamma market list by official `sports_market_types` for soccer props: `soccer_exact_score`, `soccer_player_goals`, `soccer_anytime_goalscorer`, `soccer_player_assists`, `soccer_player_shots`, `soccer_player_shots_on_target`, `total_corners`, `soccer_team_total_corners`, and `soccer_first_half_total_corners`.
+3. Combos RFQ catalog: `https://combos-rfq-api.polymarket.com/v1/rfq/combo-markets` for combo-eligible legs. Treat displayed app combos as RFQ/combo products, not as ordinary Gamma event markets.
+4. CLOB: best bid/ask, midpoint, spread, and order book depth for shortlisted tokens.
+5. Sports result feed: live/ended flag, score, period, elapsed time, and last update if the match is live.
+6. Data API: recent trades, holders, open interest, and user positions when needed.
+7. Team news: use Polymarket if it exposes structured lineups; otherwise use Guardian/FOX/ESPN/Sofascore for confirmed lineups, injuries, rotation, suspensions, motivation, weather/venue.
+8. External match stats: use FOX/Sofascore/ESPN for shots, xG, possession, cards, subs, and pressure. Do not imply Polymarket provides these unless verified.
+9. User exposure from account/open orders when trading.
 
-For Polymarket soccer, check both the main event and `-more-markets` event; totals, spreads, BTTS, team totals, extra time, and penalties may live under `more-markets`.
+For Polymarket soccer, check the main event, `-more-markets`, official sports prop market types, and combo RFQ. Totals, spreads, BTTS, team totals, extra time, and penalties may live under `more-markets`; exact score, corners, player goals/assists/shots may live only in Gamma market searches by `sports_market_types`; app combo cards use the combo/RFQ surface.
+
+If `scripts/polymarket-board.mjs` exists, use it as the fixed board read:
+
+```bash
+node scripts/polymarket-board.mjs --slug=EVENT_SLUG --min-price=0.001 --max-price=0.999 --min-size=0 --max-spread=0.50
+```
+
+Use `--props=false` or `--combos=false` only when intentionally narrowing a quick check. If a user asks to "遍历盘口", "所有盘口", "球员进球", "角球", "组合盘", or "props", do not disable these sources.
 
 When live:
 - Use the main Gamma event's `score`, `live`, `period`, `elapsed`, and `ended` fields as the primary match-state source.
