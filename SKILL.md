@@ -94,6 +94,26 @@ Never claim a wallet is "profitable" from closed positions alone unless losses/o
 
 Use decimal odds for the user. Convert Polymarket price `p` to decimal odds as `1 / p`.
 
+Apply professional betting discipline before recommending:
+
+| Rule | Practice |
+|---|---|
+| Positive EV only | Estimate true probability and compare it with market price `p`; recommend only when the edge is clear after vig/spread/liquidity. |
+| CLV matters | Prefer bets likely to beat the closing price; after the match, record entry price vs close to judge process quality. |
+| Fractional Kelly | Use half Kelly or quarter Kelly when edge can be estimated; use flat staking when the edge is fuzzy. Never use full Kelly for soccer. |
+| Market priority | Prefer liquid main lines first, then team totals/BTTS/corners/cards, then player props only with confirmed role and price error. |
+| Combos | Downgrade combo/parlay markets unless correlation is clearly underpriced; do not chase high displayed payout. |
+| Live betting | Bet only new positive EV after a state change; never add because an existing position is losing. |
+
+Use this quick sizing rule when the user has not given a specific stake:
+
+| Confidence | Stake |
+|---|---|
+| Lean | 0.5u to 1u |
+| Playable | 1u to 2u |
+| Strong | 2u to 4u |
+| Exceptional | 5u+ only with explicit confirmation and obvious price error |
+
 Defaults:
 
 | Parameter | Default |
@@ -117,7 +137,9 @@ Recommendation must include:
 6. Whale flow summary: supports / conflicts / neutral.
 7. Why this is better than the closest alternatives.
 8. What score/game script wins and loses.
-9. Confidence: lean / playable / strong; avoid "lock" language.
+9. Edge source: lineup/news, model/probability gap, market movement, or live state.
+10. CLV read: likely to beat close / neutral / likely late-bad price.
+11. Confidence: lean / playable / strong; avoid "lock" language.
 
 If no edge is clear, recommend no bet.
 
@@ -216,4 +238,5 @@ After execution or no-trade decision, respond in Chinese with:
 3. **仓位**: cost, units, total match exposure.
 4. **状态**: matched/open/failed plus tx hash or order id if available.
 5. **资金流**: whale flow in one short line.
-6. **依据**: one short line on lineup/news/market reason.
+6. **EV/CLV**: one short line on estimated edge and closing-line expectation.
+7. **依据**: one short line on lineup/news/market reason.
