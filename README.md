@@ -1,20 +1,47 @@
-# Polymarket Betting Skill
+# Polymarket Betting Skill for Codex
 
-A Codex skill for reading Polymarket sports markets, checking lineups/news, scanning whale flow, sizing bets, and requiring explicit confirmation before any order.
+Codex skill and public-data tools for Polymarket sports betting analysis: live odds, CLOB prices, soccer props, whale-flow scans, bankroll sizing, EV/CLV discipline, and explicit confirmation before any order.
 
-## Contents
+## What It Does
 
-- `SKILL.md` - the Codex workflow.
-- `scripts/polymarket-whales.mjs` - a public-data whale-flow scanner.
+- Reads Polymarket sports markets, including main lines, more markets, player props, corners, cards, and combo/RFQ-style markets.
+- Converts Polymarket prices into decimal odds.
+- Scans recent large trades and whale flow from public Polymarket data.
+- Forces professional betting discipline: positive EV, closing-line value, fractional Kelly sizing, and no chase-betting.
+- Keeps analysis separate from execution. The skill requires an exact order ticket and explicit confirmation before any trade.
 
-## Whale Scan
+## Keywords
+
+Polymarket, Codex skill, prediction markets, sports betting, football betting, soccer betting, World Cup odds, Polymarket API, CLOB API, Gamma API, whale tracking, smart money, betting strategy, expected value, EV betting, closing line value, CLV, Kelly criterion, fractional Kelly, bankroll management, live betting, in-play betting.
+
+## Files
+
+- `SKILL.md` - the Codex workflow and safety rules.
+- `scripts/polymarket-board.mjs` - reads a full Polymarket event board from public APIs.
+- `scripts/polymarket-whales.mjs` - scans recent large public trades for an event.
+
+## Usage
+
+Install dependencies:
 
 ```bash
-node scripts/polymarket-whales.mjs --slug=fifwc-bel-sen-2026-07-01 --minutes=60 --min=10000
+npm install
 ```
 
-The script uses public Polymarket APIs only. It does not need private keys, wallet files, API tokens, or account credentials.
+Read a Polymarket event board:
 
-## Safety Rule
+```bash
+npm run board -- --slug=fifwc-arg-cvi-2026-07-03 --min-price=0.001 --max-price=0.999
+```
 
-The skill separates analysis from execution. It requires an exact order ticket and explicit user confirmation before any trade.
+Scan whale flow:
+
+```bash
+npm run whales -- --slug=fifwc-arg-cvi-2026-07-03 --minutes=60 --min=10000
+```
+
+## Safety
+
+This public repository does not include private keys, wallet files, agent tokens, API secrets, or account credentials. The included scripts use public Polymarket data only.
+
+The skill is designed for disciplined analysis, not blind auto-trading. Any order flow must use a separate local execution setup and an explicit user confirmation gate.
