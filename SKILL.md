@@ -47,8 +47,9 @@ For each match, gather in this order:
 5. Sports result feed: live/ended flag, score, period, elapsed time, and last update if the match is live.
 6. Data API: recent trades, holders, open interest, and user positions when needed.
 7. Team news: use Polymarket if it exposes structured lineups; otherwise use Guardian/FOX/ESPN/Sofascore for confirmed lineups, injuries, rotation, suspensions, motivation, weather/venue.
-8. External match stats: use FOX/Sofascore/ESPN for shots, xG, possession, cards, subs, and pressure. Do not imply Polymarket provides these unless verified.
-9. User exposure from account/open orders when trading.
+8. Team form and tactical matchup: last 3-5 matches, opponent quality, score scripts, xG/shots if available, rest/travel, style clash, pressing/directness, block height, transition defense, set pieces, keeper quality, and whether the confirmed XI changes the normal roles.
+9. External match stats: use FOX/Sofascore/ESPN for shots, xG, possession, cards, subs, and pressure. Do not imply Polymarket provides these unless verified.
+10. User exposure from account/open orders when trading.
 
 For Polymarket soccer, check the main event, `-more-markets`, official sports prop market types, and combo RFQ. Totals, spreads, BTTS, team totals, extra time, and penalties may live under `more-markets`; exact score, corners, player goals/assists/shots may live only in Gamma market searches by `sports_market_types`; app combo cards use the combo/RFQ surface.
 
@@ -64,6 +65,7 @@ When live:
 - Use the main Gamma event's `score`, `live`, `period`, `elapsed`, and `ended` fields as the primary match-state source.
 - Do not use `-more-markets` as the score/time source; it can lag the main event. Use it for extra markets and token IDs only.
 - Refresh main-event score/time before recommending, before showing a ticket, and again immediately before execution.
+- Track substitutions and shape changes: who left/entered, position/role, set-piece takers, fresh legs vs fatigue, press intensity, block height, transition threat, and whether a player prop became worse after a role/minute change.
 - Treat a goal, red card, halftime/fulltime, major injury, or large price gap as a new market state.
 - Do not use stale pre-match odds language once the match has started.
 
@@ -137,9 +139,10 @@ Recommendation must include:
 6. Whale flow summary: supports / conflicts / neutral.
 7. Why this is better than the closest alternatives.
 8. What score/game script wins and loses.
-9. Edge source: lineup/news, model/probability gap, market movement, or live state.
-10. CLV read: likely to beat close / neutral / likely late-bad price.
-11. Confidence: lean / playable / strong; avoid "lock" language.
+9. Tactical/form read: recent form, role changes from the lineup/substitutions, and the specific matchup that supports or weakens the bet.
+10. Edge source: lineup/news, model/probability gap, market movement, or live state.
+11. CLV read: likely to beat close / neutral / likely late-bad price.
+12. Confidence: lean / playable / strong; avoid "lock" language.
 
 If no edge is clear, recommend no bet.
 
