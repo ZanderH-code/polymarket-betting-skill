@@ -48,8 +48,9 @@ For each match, gather in this order:
 6. Data API: recent trades, holders, open interest, and user positions when needed.
 7. Team news: use Polymarket if it exposes structured lineups; otherwise use Guardian/FOX/ESPN/Sofascore for confirmed lineups, injuries, rotation, suspensions, motivation, weather/venue.
 8. Team form and tactical matchup: last 3-5 matches, opponent quality, score scripts, xG/shots if available, rest/travel, style clash, pressing/directness, block height, transition defense, set pieces, keeper quality, and whether the confirmed XI changes the normal roles.
-9. External match stats: use FOX/Sofascore/ESPN for shots, xG, possession, cards, subs, and pressure. Do not imply Polymarket provides these unless verified.
-10. User exposure from account/open orders when trading.
+9. Lineup-change read: do not treat star benching or "rotation" as an automatic downgrade. Check previous-match player ratings, substitution timing, coach quotes, and how the team changed after the subs. Classify each major change as downgrade / rest rotation / tactical upgrade / role rebalance.
+10. External match stats: use FOX/Sofascore/ESPN for shots, xG, possession, cards, subs, and pressure. Do not imply Polymarket provides these unless verified.
+11. User exposure from account/open orders when trading.
 
 For Polymarket soccer, check the main event, `-more-markets`, official sports prop market types, and combo RFQ. Totals, spreads, BTTS, team totals, extra time, and penalties may live under `more-markets`; exact score, corners, player goals/assists/shots may live only in Gamma market searches by `sports_market_types`; app combo cards use the combo/RFQ surface.
 
@@ -106,6 +107,17 @@ Apply professional betting discipline before recommending:
 | Market priority | Prefer liquid main lines first, then team totals/BTTS/corners/cards, then player props only with confirmed role and price error. |
 | Combos | Downgrade combo/parlay markets unless correlation is clearly underpriced; do not chase high displayed payout. |
 | Live betting | Bet only new positive EV after a state change; never add because an existing position is losing. |
+| Lineup changes | Price the role impact, not the name. A famous attacker benched after a poor tactical fit can be a team upgrade; a less famous runner/holder may improve pressing, balance, or transition defense. |
+
+Lineup-change checklist:
+
+| Signal | Read |
+|---|---|
+| Star benched after poor rating, early sub, or bad fit | Possible tactical upgrade, not automatic downgrade |
+| Team improved after the replacement entered last match | Upgrade or role rebalance signal |
+| Coach/media describe a shape or intensity change | Higher signal than generic "rotation" |
+| Replacement weakens set pieces, chance creation, or ball progression | Real downgrade |
+| Market overreacts to name value | Look for contrarian value on the supposedly weakened team |
 
 Use this quick sizing rule when the user has not given a specific stake:
 
@@ -139,7 +151,7 @@ Recommendation must include:
 6. Whale flow summary: supports / conflicts / neutral.
 7. Why this is better than the closest alternatives.
 8. What score/game script wins and loses.
-9. Tactical/form read: recent form, role changes from the lineup/substitutions, and the specific matchup that supports or weakens the bet.
+9. Tactical/form read: recent form, lineup-change classification, role changes from the lineup/substitutions, previous-match ratings or substitution evidence, and the specific matchup that supports or weakens the bet.
 10. Edge source: lineup/news, model/probability gap, market movement, or live state.
 11. CLV read: likely to beat close / neutral / likely late-bad price.
 12. Confidence: lean / playable / strong; avoid "lock" language.
