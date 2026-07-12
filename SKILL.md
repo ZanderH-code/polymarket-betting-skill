@@ -51,6 +51,7 @@ For each match, gather in this order:
 9. Lineup-change read: do not treat star benching or "rotation" as an automatic downgrade. Check previous-match player ratings, substitution timing, coach quotes, and how the team changed after the subs. Classify each major change as downgrade / rest rotation / tactical upgrade / role rebalance.
 10. External match stats: use FOX/Sofascore/ESPN for shots, xG, possession, cards, subs, and pressure. Do not imply Polymarket provides these unless verified.
 11. User exposure from account/open orders when trading.
+12. Settlement scope: read the market rules and state whether it settles on regulation time, includes stoppage time, extra time, penalties, or advancement. Never infer this from the market title alone.
 
 For Polymarket soccer, check the main event, `-more-markets`, official sports prop market types, and combo RFQ. Totals, spreads, BTTS, team totals, extra time, and penalties may live under `more-markets`; exact score, corners, player goals/assists/shots may live only in Gamma market searches by `sports_market_types`; app combo cards use the combo/RFQ surface.
 
@@ -69,6 +70,7 @@ When live:
 - Track substitutions and shape changes: who left/entered, position/role, set-piece takers, fresh legs vs fatigue, press intensity, block height, transition threat, and whether a player prop became worse after a role/minute change.
 - Treat a goal, red card, halftime/fulltime, major injury, or large price gap as a new market state.
 - Do not use stale pre-match odds language once the match has started.
+- Before recommending a live total or player prop, verify current shots, shots on target, xG or dangerous attacks, box touches, substitutions, role, and remaining minutes from an external stats source. If the required evidence is unavailable, downgrade to a lean or no bet.
 
 ## Step 3: Run Whale Flow
 
@@ -108,6 +110,9 @@ Apply professional betting discipline before recommending:
 | Combos | Downgrade combo/parlay markets unless correlation is clearly underpriced; do not chase high displayed payout. |
 | Live betting | Bet only new positive EV after a state change; never add because an existing position is losing. |
 | Lineup changes | Price the role impact, not the name. A famous attacker benched after a poor tactical fit can be a team upgrade; a less famous runner/holder may improve pressing, balance, or transition defense. |
+| Correlated exposure | Group bets by the game script that makes them win or lose. Team goals, match over, BTTS, scorer props, and attacking spreads can be one risk even when market names differ. Size the group, not each ticket independently. |
+| Settlement scope | Match the thesis to the settlement window. A regulation-time total does not benefit from extra-time goals; advancement and match-winner markets may settle differently. |
+| Player props | Do not convert "team likely to score" into "star likely to score." Require confirmed minutes/role, set-piece or penalty status, individual shot/box-touch evidence, matchup, and a price edge versus team totals and other scorers. |
 
 Lineup-change checklist:
 
@@ -118,6 +123,16 @@ Lineup-change checklist:
 | Coach/media describe a shape or intensity change | Higher signal than generic "rotation" |
 | Replacement weakens set pieces, chance creation, or ball progression | Real downgrade |
 | Market overreacts to name value | Look for contrarian value on the supposedly weakened team |
+
+Before recommending multiple bets on one match:
+
+1. Write the winning and losing game script for each bet.
+2. Mark bets as strongly correlated when the same event drives both, such as match over plus striker goal.
+3. Compare the package with the best single bet. Add the second bet only if it has an independent edge, not merely a larger payout.
+4. Cap all strongly correlated positions at the stake justified for one thesis. Do not apply the normal stake to every leg separately.
+5. Prefer the more liquid, broader market when evidence supports team-level scoring but not the named player.
+
+Player-goal props are no-bet unless all are verified: expected remaining minutes, role/position, penalty and set-piece status, recent or live individual shot involvement, opponent matchup, and positive EV at the available price. For live props, observe at least 5-10 minutes after kickoff or a major tactical change unless an obvious price error is independently supported.
 
 Use this quick sizing rule when the user has not given a specific stake:
 
@@ -137,6 +152,7 @@ Defaults:
 | Normal stake | 1u to 2u |
 | Test stake | Only for first-time API verification |
 | Max single-match exposure | 5% bankroll normally; 10% only with explicit user confirmation |
+| Correlated thesis exposure | Treat correlated tickets as one position; use the confidence stake once across the group |
 | Order type | Limit order |
 | Price | Current best ask for BUY, unless recommending a patient bid |
 | Whale scan | Last 60 min, min $10k |
@@ -155,6 +171,9 @@ Recommendation must include:
 10. Edge source: lineup/news, model/probability gap, market movement, or live state.
 11. CLV read: likely to beat close / neutral / likely late-bad price.
 12. Confidence: lean / playable / strong; avoid "lock" language.
+13. Settlement scope: regulation time / includes extra time / advancement, quoted from or verified against the market rules.
+14. Correlation audit: list existing and proposed bets driven by the same game script and show their combined dollars and units.
+15. Player-prop evidence: minutes, role, penalties/set pieces, shot involvement, matchup, and why it beats the closest team-level market.
 
 If no edge is clear, recommend no bet.
 
